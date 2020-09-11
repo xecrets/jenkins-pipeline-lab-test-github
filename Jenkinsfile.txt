@@ -4,14 +4,14 @@ pipeline {
     agent {
         node {
             label 'master'
-            customWorkspace "/workspace/jenkins-pipeline-lab-test/master"
+            customWorkspace "/workspace/jenkins-pipeline-lab-test-github/master"
         }
     }
     stages {
         stage('Checkout') {
 			steps {
 				dir('test') {
-					git branch: "master", credentialsId: 'a63d3f99-c62c-4505-96f8-bbf2fd297dee', url: 'git@bitbucket.org:axantum/jenkins-pipeline-lab-test.git'
+					git branch: "master", url: 'https://github.com/xecrets/jenkins-pipeline-lab-test-github.git'
 				}
 			}
 		}
