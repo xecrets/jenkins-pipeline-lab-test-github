@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
 			steps {
 				dir('test') {
-					git branch: "master", url: 'https://github.com/xecrets/jenkins-pipeline-lab-test-github.git'
+					// git branch: "master", url: 'https://github.com/xecrets/jenkins-pipeline-lab-test-github.git'
 				}
 			}
 		}
