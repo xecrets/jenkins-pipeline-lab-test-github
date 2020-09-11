@@ -25,7 +25,10 @@ pipeline {
     }
 	post {
 		always {
-			// Testing availability of changeSets
+			emailext body: 'A Test EMail',
+				recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+				subject: 'Test'
+	// Testing availability of changeSets
 			script {
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
