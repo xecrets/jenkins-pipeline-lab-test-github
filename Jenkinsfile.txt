@@ -1,0 +1,79 @@
+pipeline {
+    triggers { pollSCM('* * * * *') }
+    options { timestamps() }
+    agent {
+        node {
+            label 'master'
+            customWorkspace "/workspace/jenkins-pipeline-lab-test/master"
+        }
+    }
+    stages {
+        stage('Checkout') {
+			steps {
+				dir('test') {
+					git branch: "master", credentialsId: 'a63d3f99-c62c-4505-96f8-bbf2fd297dee', url: 'git@bitbucket.org:axantum/jenkins-pipeline-lab-test.git'
+				}
+			}
+		}
+		stage ('Do something') {
+			steps {
+				script {
+					bat "exit 0"
+				}
+			}
+		}
+    }
+	post {
+		always {
+			// Testing availability of changeSets
+			script {
+				def changeLogSets = currentBuild.changeSets
+				for (int i = 0; i < changeLogSets.size(); i++) {
+					def entries = changeLogSets[i].items
+					for (int j = 0; j < entries.length; j++) {
+						def entry = entries[j]
+						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+						def files = new ArrayList(entry.affectedFiles)
+						for (int k = 0; k < files.size(); k++) {
+							def file = files[k]
+							echo "  ${file.editType.name} ${file.path}"
+						}
+					}
+				}
+			}
+		}
+		success {
+			script {
+				def userIds = slackUserIdsFromCommitters()
+				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
+				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+			}
+		}
+		regression {
+			script {
+				def userIds = slackUserIdsFromCommitters()
+				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
+
+				if (currentBuild.result == 'UNSTABLE') {
+					slackSend color: "warning", message: "${userIdsString} Pipeline Testing indicates regression to an UNSTABLE build.", notifyCommitters: true
+				}
+				if (currentBuild.result == 'FAILURE') {
+					slackSend color: "danger", message: "${userIdsString} Pipeline Testing indicates regression to a FAILED build.", notifyCommitters: true
+				}
+			}
+		}
+		failure {
+			script {
+				def userIds = slackUserIdsFromCommitters()
+				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
+
+				if (currentBuild.result == 'UNSTABLE') {
+					slackSend color: "warning", message: "${userIdsString} Pipeline Testing indicates an UNSTABLE build.", notifyCommitters: true
+				}
+				if (currentBuild.result == 'FAILURE') {
+					slackSend color: "danger", message: "${userIdsString} Pipeline Testing indicates a FAILED build.", notifyCommitters: true
+				}
+			}
+		}
+	}
+}
