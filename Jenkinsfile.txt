@@ -37,6 +37,9 @@ pipeline {
 					for (int j = 0; j < entries.length; j++) {
 						def entry = entries[j]
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+						def mailAddress = entry.author.getProperty(Mailer.UserProperty.class).getAddress()
+						echo "Email = ${emailAddress}"
+
 						def files = new ArrayList(entry.affectedFiles)
 						for (int k = 0; k < files.size(); k++) {
 							def file = files[k]
@@ -56,7 +59,7 @@ pipeline {
 				echo "${userIdsString}"
 				//def userIdsString = ""
 
-				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+				slackSend color: "good", message: "@${userId} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
 			}
 		}
 		regression {
