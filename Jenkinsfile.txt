@@ -93,6 +93,9 @@ pipeline {
 			}
 			*/
 			script {
+				def nonMappableSlackUserIds = slackuserEmails.collect { slackUserIdFromEmail(it) == null ? it : null }
+				nonMappableSlackUserIds = nonMappableSlackUserIds.findAll { it != null }
+				echo nonMappableSlackUserIds
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIds = slackUserIds.findAll { it != null}
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
