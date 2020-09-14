@@ -65,9 +65,9 @@ pipeline {
 			script {
 				def to = emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']])
 				to.each {
-					echo "email-ext finds email ${it}"
-					if (!slackUserEmails.contains(it)) {
-						slackUserEmails.add(it);
+					echo "email-ext finds email ${it.toString()}"
+					if (!slackUserEmails.contains(it.toString())) {
+						slackUserEmails.add(it.toString());
 					}
 				}
 			}
