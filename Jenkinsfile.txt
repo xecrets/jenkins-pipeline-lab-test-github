@@ -57,7 +57,7 @@ pipeline {
 			script {
 			    wrap([$class: 'BuildUser']) {
 					def buildUser = env.BUILD_USER_EMAIL
-					if (!slackUserEmails.contains(buildUser)) {
+					if (buildUser && !slackUserEmails.contains(buildUser)) {
 						slackUserEmails.add(buildUser);
 					}
 				}
