@@ -61,7 +61,7 @@ pipeline {
 			// the previous block can't be serialized, causing an exception.
 			script {
 				echo "1"
-				// echo currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]['userId']
+				echo currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]['userId']
 				echo "4"
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
