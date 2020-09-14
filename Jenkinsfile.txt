@@ -52,7 +52,7 @@ pipeline {
 					}
 				}
 				echo "before 1"
-				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
+				def slackUserIds = [ slackUserIdFromEmail('svante@axantum.com') ] //slackUserEmails.collect { slackUserIdFromEmail(it) }
 				echo "before 2"
 				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 				echo "before 3"
