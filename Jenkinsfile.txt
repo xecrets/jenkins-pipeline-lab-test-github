@@ -1,5 +1,6 @@
 // slackUserIdsString = ""
 slackUserEmails  = []
+slackUserIdsNotification = ""
 
 pipeline {
     triggers { pollSCM('* * * * *') }
@@ -34,7 +35,6 @@ pipeline {
 
 			// Testing availability of changeSets
 			script {
-				// def slackUserEmails = []
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
 					def entries = changeLogSets[i].items
@@ -54,11 +54,8 @@ pipeline {
 				}
 			}
 			script {
-				echo "before 1"
-				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
-				echo "before 2"
-				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
-				echo "before 3 ${userIdsString}"
+				slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
+				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
 			}
 		}
 		success {
@@ -72,7 +69,7 @@ pipeline {
 				echo "${userIdsString}"
 				//def userIdsString = ""
 
-				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+				slackSend color: "good", message: "${slackUserIdsNotification} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
 			}
 		}
 		regression {
