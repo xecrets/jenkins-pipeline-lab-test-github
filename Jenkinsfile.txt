@@ -24,7 +24,7 @@ pipeline {
 			steps {
 				script {
 					echo "Doing stuff..."
-					bat "exit 0"
+					bat "exit 1"
 				}
 			}
 		}
@@ -64,7 +64,7 @@ pipeline {
 				/*
 				def manualBuildUserCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]
 				if (manualBuildUserCause) {
-				def manualBuildUserId = manualBuildUserCause['userId']
+				    def manualBuildUserId = manualBuildUserCause['userId']
 					if (manualBuildUserId?.trim()) {
 						def manualBuildUser = hudson.model.User.getById(manualBuildUserId, false);
 						def manualBuildUserEmail = getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString();
