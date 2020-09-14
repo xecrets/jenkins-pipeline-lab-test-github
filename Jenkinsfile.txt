@@ -48,7 +48,7 @@ pipeline {
 		success {
 			script {
 				def userIds = slackUserIdsFromCommitters()
-				bat echo "${userIds}"
+				// bat echo "${userIds}"
 				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
 				//def userIdsString = ""
 
@@ -63,10 +63,10 @@ pipeline {
 				def userIdsString = ""
 
 				if (currentBuild.result == 'UNSTABLE') {
-					slackSend color: "warning", message: "${userIdsString} Pipeline Testing indicates regression to an UNSTABLE build.", notifyCommitters: true
+					slackSend color: "warning", message: "${userIdsString} Pipeline Testing indicates regression to an UNSTABLE build.", notifyCommitters: false
 				}
 				if (currentBuild.result == 'FAILURE') {
-					slackSend color: "danger", message: "${userIdsString} Pipeline Testing indicates regression to a FAILED build.", notifyCommitters: true
+					slackSend color: "danger", message: "${userIdsString} Pipeline Testing indicates regression to a FAILED build.", notifyCommitters: false
 				}
 			}
 		}
@@ -78,10 +78,10 @@ pipeline {
 				def userIdsString = ""
 
 				if (currentBuild.result == 'UNSTABLE') {
-					slackSend color: "warning", message: "${userIdsString} Pipeline Testing indicates an UNSTABLE build.", notifyCommitters: true
+					slackSend color: "warning", message: "${userIdsString} Pipeline Testing indicates an UNSTABLE build.", notifyCommitters: false
 				}
 				if (currentBuild.result == 'FAILURE') {
-					slackSend color: "danger", message: "${userIdsString} Pipeline Testing indicates a FAILED build.", notifyCommitters: true
+					slackSend color: "danger", message: "${userIdsString} Pipeline Testing indicates a FAILED build.", notifyCommitters: false
 				}
 			}
 		}
