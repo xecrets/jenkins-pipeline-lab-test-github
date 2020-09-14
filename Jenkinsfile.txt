@@ -43,7 +43,7 @@ pipeline {
 						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
 						echo "email = ${emailAddress}"
 						def userId = slackUserIdFromEmail(emailAddress)
-						echo "userId = ${userId}"
+						// echo "userId = ${userId}"
 						// slackUserIds.add(userId)
 
 						def files = new ArrayList(entry.affectedFiles)
