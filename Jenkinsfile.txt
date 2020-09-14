@@ -49,9 +49,9 @@ pipeline {
 		success {
 			script {
 				def userIds = slackUserIdsFromCommitters()
-				bat echo "${userIds}"
+				echo "${userIds}"
 				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
-				bat echo "${userIdsString}"
+				echo "${userIdsString}"
 				//def userIdsString = ""
 
 				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
