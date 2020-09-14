@@ -65,7 +65,7 @@ pipeline {
 				if (manualBuildUserCause) {
 				def manualBuildUserId = manualBuildUserCause['userId']
 					if (manualBuildUserId?.trim()) {
-						def manualBuildUser = hudson.model.User.getById(manualBuildUserId);
+						def manualBuildUser = hudson.model.User.getById(manualBuildUserId, false);
 						def manualBuildUserEmail = getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString();
 							if (manualBuildUserEmail?.trim()) {
 								slackUserEmails.add(manualBuildUserEmail)
@@ -98,7 +98,7 @@ pipeline {
 		}
 		fixed {
 			script {
-				slackSend color: "warning", message: "${slackUserIdsNotification} Bra där, nu lirar allt igen!", notifyCommitters: false
+				slackSend color: "good", message: "${slackUserIdsNotification} Bra där, nu lirar allt igen!", notifyCommitters: false
 			}
 		}
 	}
