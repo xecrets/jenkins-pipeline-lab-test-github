@@ -61,6 +61,17 @@ pipeline {
 						slackUserEmails.add(buildUser);
 					}
 				}
+			}
+			script {
+				def to = emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']])
+				to.each {
+					echo "email-ext finds email ${it}"
+					if (!slackUserEmails.contains(it)) {
+						slackUserEmails.add(it);
+					}
+				}
+			}
+			script {
 				/*
 				def manualBuildUserCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]
 				if (manualBuildUserCause) {
@@ -74,6 +85,8 @@ pipeline {
 					}
 				}
 				*/
+			}
+			script {
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
 			}
