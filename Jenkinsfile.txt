@@ -1,3 +1,6 @@
+// Global variables needed to communicate between script blocks
+def slackUserEmails  = []
+def slackUserIdsNotification = ""
 
 pipeline {
     triggers { pollSCM('* * * * *') }
@@ -24,8 +27,6 @@ pipeline {
 			}
 		}
     }
-slackUserEmails  = []
-slackUserIdsNotification = ""
 	post {
 		always {
 			// Testing availability of changeSets
