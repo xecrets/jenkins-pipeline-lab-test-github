@@ -28,7 +28,8 @@ pipeline {
 			emailext body: 'A Test EMail',
 				recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
 				subject: 'Test'
-	// Testing availability of changeSets
+
+			// Testing availability of changeSets
 			script {
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
@@ -48,11 +49,12 @@ pipeline {
 		success {
 			script {
 				def userIds = slackUserIdsFromCommitters()
-				// bat echo "${userIds}"
+				bat echo "${userIds}"
 				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
+				bat echo "${userIdsString}"
 				//def userIdsString = ""
 
-				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: false
+				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
 			}
 		}
 		regression {
