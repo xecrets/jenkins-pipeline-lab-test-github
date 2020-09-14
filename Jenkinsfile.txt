@@ -1,6 +1,3 @@
-// slackUserIdsString = ""
-slackUserEmails  = []
-slackUserIdsNotification = ""
 
 pipeline {
     triggers { pollSCM('* * * * *') }
@@ -28,11 +25,10 @@ pipeline {
 		}
     }
 	post {
-		always {
-			emailext body: 'A Test EMail',
-				recipientProviders: [[$class: 'DevelopersRecipientProvider']/*, [$class: 'RequesterRecipientProvider']*/],
-				subject: 'Test'
+slackUserEmails  = []
+slackUserIdsNotification = ""
 
+		always {
 			// Testing availability of changeSets
 			script {
 				def changeLogSets = currentBuild.changeSets
@@ -53,6 +49,8 @@ pipeline {
 					}
 				}
 			}
+			// This has to be in a separate script block because use of slackUserIdFromEmail() causes things to be serialized, and the changeLogLets in
+			// the previous block can't be serialized, causing an exception.
 			script {
 				slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
