@@ -73,8 +73,8 @@ pipeline {
 					}
 				}
 			}
+			/*
 			script {
-				/*
 				def manualBuildUserCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]
 				if (manualBuildUserCause) {
 				    def manualBuildUserId = manualBuildUserCause['userId']
@@ -86,8 +86,8 @@ pipeline {
 							}
 					}
 				}
-				*/
 			}
+			*/
 			script {
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
