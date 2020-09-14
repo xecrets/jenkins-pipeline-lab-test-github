@@ -31,6 +31,8 @@ pipeline {
 
 			// Testing availability of changeSets
 			script {
+				import hudson.tasks.Mailer
+
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
 					def entries = changeLogSets[i].items
