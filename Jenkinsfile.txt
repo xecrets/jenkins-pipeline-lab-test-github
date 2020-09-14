@@ -1,4 +1,4 @@
-slackUserIds = []
+slackUserIdsString = ""
 
 pipeline {
     triggers { pollSCM('* * * * *') }
@@ -33,6 +33,7 @@ pipeline {
 
 			// Testing availability of changeSets
 			script {
+				def slackUserIds = []
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
 					def entries = changeLogSets[i].items
@@ -51,6 +52,7 @@ pipeline {
 						}
 					}
 				}
+				userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 			}
 		}
 		success {
@@ -58,8 +60,8 @@ pipeline {
 				// def userId = slackUserIdFromEmail('svante@axantum.com')
                 // echo userId
 				// def userIds = slackUserIdsFromCommitters()
-				echo "${slackUserIds}"
-				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
+				// echo "${slackUserIds}"
+				// def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 				echo "${userIdsString}"
 				//def userIdsString = ""
 
