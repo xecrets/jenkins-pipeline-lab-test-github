@@ -22,7 +22,7 @@ pipeline {
 		stage ('Do something') {
 			steps {
 				script {
-					bat "exit 0"
+					bat "exit 1"
 				}
 			}
 		}
