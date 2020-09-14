@@ -1,3 +1,6 @@
+@groovy.transform.Field
+def slackUserIds = []
+
 pipeline {
     triggers { pollSCM('* * * * *') }
     options { timestamps() }
@@ -37,8 +40,10 @@ pipeline {
 					for (int j = 0; j < entries.length; j++) {
 						def entry = entries[j]
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
-						def mailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
-						echo "Email = ${mailAddress}"
+						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
+						def userId = slackUserIdFromEmail(emailAddress)
+						echo "Email = ${mailAddress}, userId = ${userId}"
+						slackUserIds.add(userId)
 
 						def files = new ArrayList(entry.affectedFiles)
 						for (int k = 0; k < files.size(); k++) {
@@ -51,15 +56,15 @@ pipeline {
 		}
 		success {
 			script {
-				def userId = slackUserIdFromEmail('svante@axantum.com')
-                echo userId
-				def userIds = slackUserIdsFromCommitters()
-				echo "${userIds}"
-				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
+				// def userId = slackUserIdFromEmail('svante@axantum.com')
+                // echo userId
+				// def userIds = slackUserIdsFromCommitters()
+				echo "${slackUserIds}"
+				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 				echo "${userIdsString}"
 				//def userIdsString = ""
 
-				slackSend color: "good", message: "<@${userId}> Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
 			}
 		}
 		regression {
