@@ -1,4 +1,4 @@
-slackUserIdsString = ""
+// slackUserIdsString = ""
 
 pipeline {
     triggers { pollSCM('* * * * *') }
@@ -33,7 +33,7 @@ pipeline {
 
 			// Testing availability of changeSets
 			script {
-				def slackUserIds = []
+				// def slackUserIds = []
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
 					def entries = changeLogSets[i].items
@@ -42,8 +42,8 @@ pipeline {
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
 						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
 						def userId = slackUserIdFromEmail(emailAddress)
-						echo "Email = ${emailAddress}" /* , userId = ${userId} */
-						slackUserIds.add(userId)
+						echo "Email = ${emailAddress}, userId = ${userId}
+						// slackUserIds.add(userId)
 
 						def files = new ArrayList(entry.affectedFiles)
 						for (int k = 0; k < files.size(); k++) {
@@ -52,16 +52,17 @@ pipeline {
 						}
 					}
 				}
-				userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
+				// def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 			}
 		}
 		success {
 			script {
-				// def userId = slackUserIdFromEmail('svante@axantum.com')
-                // echo userId
-				// def userIds = slackUserIdsFromCommitters()
-				// echo "${slackUserIds}"
-				// def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
+				def userId = slackUserIdFromEmail('svante@axantum.com')
+                echo userId
+				// def slackUserIds = slackUserIdsFromCommitters()
+				def slackUserIds = [userId]
+				echo "${slackUserIds}"
+				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 				echo "${userIdsString}"
 				//def userIdsString = ""
 
