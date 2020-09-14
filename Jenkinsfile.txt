@@ -42,10 +42,12 @@ pipeline {
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
 						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
 						echo "email = ${emailAddress}"
-						echo "before"
+						echo "before 1"
 						def emailString = emailAddress.toString()
-						def userId = slackUserIdFromEmail(emailString)
-						echo "after"
+						echo "before 2"
+						// def userId = slackUserIdFromEmail(emailString)
+						echo "before 3"
+						echo "after emailString  = '${emailString}'"
 						// echo "userId = ${userId}"
 						// slackUserIds.add(userId)
 
