@@ -90,11 +90,15 @@ pipeline {
 		}
 		failure {
 			script {
-				if (currentBuild.previousBuild?.result != 'SUCCESS' && currentBuild.result == 'UNSTABLE') {
-					slackSend color: "warning", message: "${slackUserIdsNotification} Ledsen, men några tester är fortfarande trasiga. Skam den som ger sig, på den igen!", notifyCommitters: false
-				}
-				if (currentBuild.previousBuild?.result != 'SUCCESS' && currentBuild.result == 'FAILURE') {
+				if (currentBuild.previousBuild?.result != 'SUCCESS') {
 					slackSend color: "danger", message: "${slackUserIdsNotification} Tyvärr, men bygget lyser fortfarande rött. Försök igen!", notifyCommitters: false
+				}
+			}
+		}
+		unstable {
+			script {
+				if (currentBuild.previousBuild?.result != 'SUCCESS') {
+					slackSend color: "warning", message: "${slackUserIdsNotification} Ledsen, men några tester är fortfarande trasiga. Skam den som ger sig, på den igen!", notifyCommitters: false
 				}
 			}
 		}
