@@ -50,7 +50,7 @@ pipeline {
 				def userIds = slackUserIdsFromCommitters()
 				bat echo "${userIds}"
 				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
-				def userIdsString = ""
+				//def userIdsString = ""
 
 				slackSend color: "good", message: "${userIdsString} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: false
 			}
