@@ -89,6 +89,9 @@ pipeline {
 			}
 		}
 		failure {
+	        when {
+				expression { return currentBuild.previousBuild?.result != 'SUCCESS' }
+			}
 			script {
 				if (currentBuild.result == 'UNSTABLE') {
 					slackSend color: "warning", message: "${slackUserIdsNotification} Ledsen, men några tester är fortfarande trasiga. Skam den som ger sig, på den igen!", notifyCommitters: false
