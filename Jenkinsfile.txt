@@ -1,4 +1,4 @@
-// Global variables needed to communicate between script blocks
+﻿// Global variables needed to communicate between script blocks
 def slackUserEmails  = []
 def slackUserIdsNotification = ""
 
@@ -53,33 +53,37 @@ pipeline {
 			// This has to be in a separate script block because use of slackUserIdFromEmail() causes things to be serialized, and the changeLogLets in
 			// the previous block can't be serialized, causing an exception.
 			script {
+			    wrap([$class: 'BuildUser']) {
+					def buildUser = env.BUILD_USER_EMAIL
+					echo "Build user is ${buildUser}"
+				}
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
-			}
-		}
-		success {
-			script {
-				slackSend color: "good", message: "${slackUserIdsNotification} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: false
 			}
 		}
 		regression {
 			script {
 				if (currentBuild.result == 'UNSTABLE') {
-					slackSend color: "warning", message: "${slackUserIdsNotification} Pipeline Testing indicates regression to an UNSTABLE build.", notifyCommitters: false
+					slackSend color: "warning", message: "${slackUserIdsNotification} Nedrans, någon eller några tester har gått snett! Bara sätta igång och laga.", notifyCommitters: false
 				}
 				if (currentBuild.result == 'FAILURE') {
-					slackSend color: "danger", message: "${slackUserIdsNotification} Pipeline Testing indicates regression to a FAILED build.", notifyCommitters: false
+					slackSend color: "danger", message: "${slackUserIdsNotification} Attans, det går inte att bygga! Skynda, skynda fixa!", notifyCommitters: false
 				}
 			}
 		}
 		failure {
 			script {
 				if (currentBuild.result == 'UNSTABLE') {
-					slackSend color: "warning", message: "${slackUserIdsNotification} Pipeline Testing indicates an UNSTABLE build.", notifyCommitters: false
+					slackSend color: "warning", message: "${slackUserIdsNotification} Ledsen, men några tester är fortfarande trasiga. Skam den som ger sig, på den igen!", notifyCommitters: false
 				}
 				if (currentBuild.result == 'FAILURE') {
-					slackSend color: "danger", message: "${slackUserIdsNotification} Pipeline Testing indicates a FAILED build.", notifyCommitters: false
+					slackSend color: "danger", message: "${slackUserIdsNotification} Det går inte så bra nu, det gick inte att bygga nu heller. Försök igen!", notifyCommitters: false
 				}
+			}
+		}
+		fixed {
+			script {
+				slackSend color: "warning", message: "${slackUserIdsNotification} Bra där, nu lirar allt igen!", notifyCommitters: false
 			}
 		}
 	}
