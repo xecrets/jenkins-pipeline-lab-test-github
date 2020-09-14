@@ -1,3 +1,4 @@
+// Save as UTF-8 *without* BOM. (With BOM results in groovy.lang.MissingPropertyException: No such property: ﻿ for class: groovy.lang.Binding)
 // Global variables needed to communicate between script blocks
 def slackUserEmails  = []
 def slackUserIdsNotification = ""
@@ -60,9 +61,14 @@ pipeline {
 			// This has to be in a separate script block because use of slackUserIdFromEmail() causes things to be serialized, and the changeLogLets in
 			// the previous block can't be serialized, causing an exception.
 			script {
-				echo "1"
-				echo currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]['userId']
-				echo "4"
+				def manualBuildUserId = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]['userId']
+				if (manualBuildUserId) {
+					def manualBuildUser = hudson.model.User.getById(manualBuildUserId);
+					def manualBuildUserEmail = getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString();
+						if (manualBuildUserEmail?.trim()) {
+							slackUserEmails.add(manualBuildUserEmail)
+						}
+				}
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
 			}
