@@ -33,7 +33,7 @@ pipeline {
 
 			// Testing availability of changeSets
 			script {
-				// def slackUserIds = []
+				def slackUserEmails = []
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
 					def entries = changeLogSets[i].items
@@ -42,14 +42,7 @@ pipeline {
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
 						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
 						echo "email = ${emailAddress}"
-						echo "before 1"
-						def emailString = emailAddress.toString()
-						echo "before 2"
-						// def userId = slackUserIdFromEmail(emailString)
-						echo "before 3"
-						echo "after emailString  = '${emailString}'"
-						// echo "userId = ${userId}"
-						// slackUserIds.add(userId)
+						slackUserEmails.add(emailAddress.toString())
 
 						def files = new ArrayList(entry.affectedFiles)
 						for (int k = 0; k < files.size(); k++) {
@@ -58,7 +51,11 @@ pipeline {
 						}
 					}
 				}
-				// def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
+				echo "before 1"
+				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
+				echo "before 2"
+				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
+				echo "before 3"
 			}
 		}
 		success {
