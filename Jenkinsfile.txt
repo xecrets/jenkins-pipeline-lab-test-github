@@ -48,6 +48,8 @@ pipeline {
 		}
 		success {
 			script {
+				def userId = slackUserIdFromEmail('svante@axantum.com')
+                echo userId
 				def userIds = slackUserIdsFromCommitters()
 				echo "${userIds}"
 				def userIdsString = userIds.collect { "<@$it>" }.join(' ')
