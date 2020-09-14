@@ -1,4 +1,4 @@
-﻿// Global variables needed to communicate between script blocks
+// Global variables needed to communicate between script blocks
 def slackUserEmails  = []
 def slackUserIdsNotification = ""
 
@@ -51,7 +51,7 @@ pipeline {
 					}
 				}
 			}
-			    // wrap([$class: 'BuildUser']) {
+			    // wrap([$class: 'BuildUser']) { //
 					// echo "2"
 					//  def buildUser = BUILD_USER_EMAIL
 					// echo "3"
