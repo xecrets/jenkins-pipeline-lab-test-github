@@ -22,6 +22,7 @@ pipeline {
 		stage ('Do something') {
 			steps {
 				script {
+					echo "Doing stuff..."
 					bat "exit 1"
 				}
 			}
@@ -50,16 +51,16 @@ pipeline {
 					}
 				}
 			}
-			// This has to be in a separate script block because use of slackUserIdFromEmail() causes things to be serialized, and the changeLogLets in
-			// the previous block can't be serialized, causing an exception.
-			script {
-				echo "1"
-			    // wrap([$class: 'BuildUser']) {
+			    wrap([$class: 'BuildUser']) {
 					echo "2"
 					// def buildUser = BUILD_USER_EMAIL
 					echo "3"
 					// echo "Build user is ${buildUser}"
-				// }
+				}
+			// This has to be in a separate script block because use of slackUserIdFromEmail() causes things to be serialized, and the changeLogLets in
+			// the previous block can't be serialized, causing an exception.
+			script {
+				echo "1"
 				echo "4"
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
