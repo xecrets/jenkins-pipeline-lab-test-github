@@ -29,16 +29,18 @@ pipeline {
     }
 	post {
 		always {
-			// Get changeSets manually to get authors since slackSend notifyCommitters: true et. al. throws a NullPointerException
+			// Get changeSets manually to get authors since slackSend notifyCommitters: true et. al. throws a NullPointerException and/or does not work
 			script {
 				def changeLogSets = currentBuild.changeSets
 				for (int i = 0; i < changeLogSets.size(); i++) {
 					def entries = changeLogSets[i].items
 					for (int j = 0; j < entries.length; j++) {
 						def entry = entries[j]
-						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
+						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString()
+						if (emailAddress?.trim()) {
+							slackUserEmails.add(emailAddress)
+						}
 						echo "${entry.commitId} by '${entry.author}' with email '${emailAddress}' on ${new Date(entry.timestamp)}: ${entry.msg}"
-						slackUserEmails.add(emailAddress.toString())
 
 						def files = new ArrayList(entry.affectedFiles)
 						for (int k = 0; k < files.size(); k++) {
@@ -57,7 +59,7 @@ pipeline {
 		}
 		success {
 			script {
-				slackSend color: "good", message: "${slackUserIdsNotification} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+				slackSend color: "good", message: "${slackUserIdsNotification} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: false
 			}
 		}
 		regression {
