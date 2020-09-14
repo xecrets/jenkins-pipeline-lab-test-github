@@ -60,16 +60,7 @@ pipeline {
 		}
 		success {
 			script {
-				def userId = slackUserIdFromEmail('svante@axantum.com')
-                // echo userId
-				// def slackUserIds = slackUserIdsFromCommitters()
-				def slackUserIds = [userId]
-				// echo "${slackUserIds}"
-				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
-				echo "${userIdsString}"
-				//def userIdsString = ""
-
-				slackSend color: "good", message: "${slackUserIdsNotification} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+				slackSend color: "good", message: "${slackUserIdsNotification} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: false
 			}
 		}
 		regression {
