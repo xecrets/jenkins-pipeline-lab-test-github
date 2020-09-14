@@ -94,6 +94,7 @@ pipeline {
 			*/
 			script {
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
+				slackUserIds = slackUserIds.findAll { it != null}
 				slackUserIdsNotification = slackUserIds.collect { "<@$it>" }.join(' ')
 			}
 		}
