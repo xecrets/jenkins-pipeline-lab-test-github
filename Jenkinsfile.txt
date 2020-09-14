@@ -54,7 +54,7 @@ pipeline {
 			// the previous block can't be serialized, causing an exception.
 			script {
 			    wrap([$class: 'BuildUser']) {
-					def buildUser = env.BUILD_USER_EMAIL
+					def buildUser = BUILD_USER_EMAIL
 					echo "Build user is ${buildUser}"
 				}
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
