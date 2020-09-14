@@ -56,9 +56,9 @@ pipeline {
 				echo "1"
 			    wrap([$class: 'BuildUser']) {
 					echo "2"
-					def buildUser = BUILD_USER_EMAIL
+					// def buildUser = BUILD_USER_EMAIL
 					echo "3"
-					echo "Build user is ${buildUser}"
+					// echo "Build user is ${buildUser}"
 				}
 				echo "4"
 				def slackUserIds = slackUserEmails.collect { slackUserIdFromEmail(it) }
