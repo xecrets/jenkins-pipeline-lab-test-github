@@ -1,5 +1,4 @@
-@groovy.transform.Field
-def slackUserIds = []
+slackUserIds = []
 
 pipeline {
     triggers { pollSCM('* * * * *') }
