@@ -41,8 +41,9 @@ pipeline {
 						def entry = entries[j]
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
 						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
+						echo "email = ${emailAddress}""
 						def userId = slackUserIdFromEmail(emailAddress)
-						echo "Email = ${emailAddress}, userId = ${userId}"
+						echo "userId = ${userId}"
 						// slackUserIds.add(userId)
 
 						def files = new ArrayList(entry.affectedFiles)
@@ -61,7 +62,7 @@ pipeline {
                 echo userId
 				// def slackUserIds = slackUserIdsFromCommitters()
 				def slackUserIds = [userId]
-				echo "${slackUserIds}"
+				// echo "${slackUserIds}"
 				def userIdsString = slackUserIds.collect { "<@$it>" }.join(' ')
 				echo "${userIdsString}"
 				//def userIdsString = ""
