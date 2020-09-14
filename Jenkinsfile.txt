@@ -38,7 +38,7 @@ pipeline {
 						def entry = entries[j]
 						echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
 						def mailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()
-						echo "Email = ${emailAddress}"
+						echo "Email = ${mailAddress}"
 
 						def files = new ArrayList(entry.affectedFiles)
 						for (int k = 0; k < files.size(); k++) {
@@ -59,7 +59,7 @@ pipeline {
 				echo "${userIdsString}"
 				//def userIdsString = ""
 
-				slackSend color: "good", message: "@${userId} Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
+				slackSend color: "good", message: "<@${userId}> Pipeline Testing indicates a SUCCESSFUL build.", notifyCommitters: true
 			}
 		}
 		regression {
