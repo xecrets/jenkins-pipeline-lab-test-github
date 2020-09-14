@@ -64,12 +64,14 @@ pipeline {
 			}
 			script {
 				def to = emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']])
-				to.each { it => {
-					echo "email-ext finds email ${it.toString()}"
-					if (!slackUserEmails.contains(it.toString())) {
-						slackUserEmails.add(it.toString());
+				to.each {
+					it -> {
+						echo "email-ext finds email ${it.toString()}"
+						if (!slackUserEmails.contains(it.toString())) {
+							slackUserEmails.add(it.toString());
+						}
 					}
-				}}
+				}
 			}
 			script {
 				/*
