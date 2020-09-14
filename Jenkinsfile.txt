@@ -24,7 +24,7 @@ pipeline {
 			steps {
 				script {
 					echo "Doing stuff..."
-					bat "exit 0"
+					bat "exit 1"
 				}
 			}
 		}
