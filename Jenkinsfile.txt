@@ -94,7 +94,7 @@ pipeline {
 					slackSend color: "warning", message: "${slackUserIdsNotification} Ledsen, men några tester är fortfarande trasiga. Skam den som ger sig, på den igen!", notifyCommitters: false
 				}
 				if (currentBuild.previousBuild?.result != 'SUCCESS' && currentBuild.result == 'FAILURE') {
-					slackSend color: "danger", message: "${slackUserIdsNotification} Det går inte så bra, det gick inte att bygga nu heller. Försök igen!", notifyCommitters: false
+					slackSend color: "danger", message: "${slackUserIdsNotification} Tyvärr, men bygget lyser fortfarande rött. Försök igen!", notifyCommitters: false
 				}
 			}
 		}
