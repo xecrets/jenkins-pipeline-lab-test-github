@@ -39,8 +39,9 @@ pipeline {
 					for (int j = 0; j < entries.length; j++) {
 						def entry = entries[j]
 						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString()?.trim()
+						echo "Finding ${emailAddress} from commit authors"
 						if (emailAddress && !slackUserEmails.contains(emailAddress)) {
-							echo "Adding ${emailAddress} from committ authors"
+							echo "Adding ${emailAddress} from commit authors"
 							slackUserEmails.add(emailAddress)
 						}
 						echo "${entry.commitId} by '${entry.author}' with email '${emailAddress}' on ${new Date(entry.timestamp)}: ${entry.msg}"
@@ -58,6 +59,7 @@ pipeline {
 			script {
 			    wrap([$class: 'BuildUser']) {
 					def buildUser = env.BUILD_USER_EMAIL?.trim()
+					echo "Finding ${buildUser} from BUILD_USER_EMAIL"
 					if (buildUser && !slackUserEmails.contains(buildUser)) {
 						echo "Adding ${buildUser} from BUILD_USER_EMAIL"
 						slackUserEmails.add(buildUser);
@@ -69,9 +71,9 @@ pipeline {
 				def recipientEmails = to.split(' ');
 				for (int i = 0; i < recipientEmails.size(); i++) {
 					def email = recipientEmails[i].trim()
-					echo "email-ext finds email ${email}"
+					echo "Finding ${email} from email-ext"
 					if (email && !slackUserEmails.contains(email)) {
-						echo "Adding ${email} from email-exe"
+						echo "Adding ${email} from email-ext"
 						slackUserEmails.add(email);
 					}
 				}
@@ -84,6 +86,7 @@ pipeline {
 					if (manualBuildUserId?.trim()) {
 						def manualBuildUser = hudson.model.User.getById(manualBuildUserId, false);
 						def manualBuildUserEmail = getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString()?.trim();
+							echo "Finding ${manualBuildUserEmail} from current build cause"
 							if (manualBuildUserEmail && !slackUserEmails.contains(manualBuildUserEmail)) {
 								echo "Adding ${email} from current build cause"
 								slackUserEmails.add(manualBuildUserEmail)
