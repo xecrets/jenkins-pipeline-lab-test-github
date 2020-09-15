@@ -38,8 +38,8 @@ pipeline {
 					def entries = changeLogSets[i].items
 					for (int j = 0; j < entries.length; j++) {
 						def entry = entries[j]
-						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString()
-						if (emailAddress?.trim()) {
+						def emailAddress = entry.author.getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString()?.trim()
+						if (emailAddress && !slackUserEmails.contains(emailAddress)) {
 							echo "Adding ${emailAddress} from committ authors"
 							slackUserEmails.add(emailAddress)
 						}
@@ -57,7 +57,7 @@ pipeline {
 			// the previous block can't be serialized, causing an exception.
 			script {
 			    wrap([$class: 'BuildUser']) {
-					def buildUser = env.BUILD_USER_EMAIL
+					def buildUser = env.BUILD_USER_EMAIL?.trim()
 					if (buildUser && !slackUserEmails.contains(buildUser)) {
 						echo "Adding ${buildUser} from BUILD_USER_EMAIL"
 						slackUserEmails.add(buildUser);
@@ -68,9 +68,9 @@ pipeline {
 				def to = emailextrecipients([[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']])
 				def recipientEmails = to.split(' ');
 				for (int i = 0; i < recipientEmails.size(); i++) {
-					def email = recipientEmails[i]
+					def email = recipientEmails[i].trim()
 					echo "email-ext finds email ${email}"
-					if (!slackUserEmails.contains(email)) {
+					if (email && !slackUserEmails.contains(email)) {
 						echo "Adding ${email} from email-exe"
 						slackUserEmails.add(email);
 					}
@@ -83,8 +83,8 @@ pipeline {
 				    def manualBuildUserId = manualBuildUserCause['userId']
 					if (manualBuildUserId?.trim()) {
 						def manualBuildUser = hudson.model.User.getById(manualBuildUserId, false);
-						def manualBuildUserEmail = getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString();
-							if (manualBuildUserEmail?.trim()) {
+						def manualBuildUserEmail = getProperty(hudson.tasks.Mailer.UserProperty.class)?.getAddress()?.toString()?.trim();
+							if (manualBuildUserEmail && !slackUserEmails.contains(manualBuildUserEmail)) {
 								echo "Adding ${email} from current build cause"
 								slackUserEmails.add(manualBuildUserEmail)
 							}
